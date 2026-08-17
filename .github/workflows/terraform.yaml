@@ -10,19 +10,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout repo
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Step 2: Setup Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.6.0   # apne version ke hisaab se
 
+      # Step 3: Clean old lock + cache
+      - name: Remove old lock file
+        run: |
+          rm -rf .terraform .terraform.lock.hcl
+
+      # Step 4: Terraform Init with upgrade
       - name: Terraform Init
         run: terraform init -upgrade
         working-directory: ./environment/preprod
 
-
+      # Step 5: Terraform Plan
       - name: Terraform Plan
         run: terraform plan -var-file=terraform.tfvars
         working-directory: ./environment/preprod
