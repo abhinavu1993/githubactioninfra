@@ -1,4 +1,4 @@
-name: Feature Branch Pipeline
+name: Terraform Preprod Pipeline
 
 on:
   push:
@@ -6,24 +6,22 @@ on:
       - 'feature/*'   # sirf feature branches pe trigger hoga
 
 jobs:
-  build-and-plan:
+  terraform:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout repository
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Setup Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.6.0   # apne version ke hisaab se
 
-      # Step 3: Initialize Terraform
       - name: Terraform Init
         run: terraform init
+        working-directory: ./environment/preprod
 
-      # Step 4: Run Terraform Plan
       - name: Terraform Plan
-        run: terraform plan
+        run: terraform plan -var-file=terraform.tfvars
+        working-directory: ./environment/preprod
